@@ -1,15 +1,13 @@
 {
   "image": "mcr.microsoft.com/vscode/devcontainers/universal:2",
   "features": {
-     "ghcr.io/devcontainers/features/docker-in-docker:2": {},
-     "ghcr.io/devcontainers/features/git-lfs:1": {},
-     "ghcr.io/devcontainers/features/rust:1": {},
-     "ghcr.io/devcontainers/features/nix:1": {},
-     "ghcr.io/devcontainers/features/aws-cli:1": {},
-     "ghcr.io/devcontainers-contrib/features/pre-commit:2": {},
-     "ghcr.io/rocker-org/devcontainer-features/apt-packages:1": {
-       "packages": "curl,wget,tmux,direnv,rsync,vim,glances",
-       "upgradePackages": true
-     }
+    "ghcr.io/devcontainers/features/docker-in-docker:2": {},
+    "ghcr.io/devcontainers/features/git-lfs:1": {},
+    "ghcr.io/devcontainers/features/rust:1": {},
+    "ghcr.io/devcontainers/features/aws-cli:1": {},
+    "ghcr.io/rocker-org/devcontainer-features/apt-packages:1": {
+      "packages": "curl,wget,tmux,direnv,rsync,vim,glances",
+      "upgradePackages": true
+    }
   }
 }
