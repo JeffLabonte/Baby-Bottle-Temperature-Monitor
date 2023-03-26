@@ -7,5 +7,5 @@ edition = "2021"
 
 [dependencies]
 aws-sdk-sns = "0.24.0"
+gpio = "0.4.1"
 log = "0.4.17"
-rust_gpiozero = "0.2.1"
