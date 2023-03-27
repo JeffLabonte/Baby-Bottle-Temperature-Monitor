@@ -14,6 +14,7 @@ impl WaterTemperatureSensor {
     }
 
     pub fn read(&mut self) -> f32 {
+        println!("Reading temperature from {}", self.temperature_filepath);
         fs::read_to_string(&self.temperature_filepath)
             .unwrap()
             .trim()
