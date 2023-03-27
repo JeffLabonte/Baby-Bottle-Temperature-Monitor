@@ -32,7 +32,7 @@ impl WaterTemperatureSensor {
 
             if directory_name.starts_with("28-") {
                 base_directory_copy.push_str(&directory_name);
-                base_directory_copy.push_str("temperature");
+                base_directory_copy.push_str("/temperature");
                 println!("Found temperature sensor at {}", base_directory_copy);
                 return Ok(base_directory_copy);
             }
