@@ -1,5 +1,7 @@
 use std::fs;
 
+use log::info;
+
 const BASE_DIR_TEMPERATURE_SENSOR: &str = "/sys/bus/w1/devices/";
 
 pub struct WaterTemperatureSensor {
@@ -14,7 +16,7 @@ impl WaterTemperatureSensor {
     }
 
     pub fn read(&mut self) -> f32 {
-        println!("Reading temperature from {}", self.temperature_filepath);
+        info!("Reading temperature from {}\n", self.temperature_filepath);
         fs::read_to_string(&self.temperature_filepath)
             .unwrap()
             .trim()
@@ -34,7 +36,7 @@ impl WaterTemperatureSensor {
             if directory_name.starts_with("28-") {
                 base_directory_copy.push_str(&directory_name);
                 base_directory_copy.push_str("/temperature");
-                println!("Found temperature sensor at {}", base_directory_copy);
+                info!("Found temperature sensor at {}\n", base_directory_copy);
                 return Ok(base_directory_copy);
             }
         }
