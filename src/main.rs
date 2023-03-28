@@ -19,13 +19,15 @@ async fn publish_message_to_sms(
         .await
         .unwrap();
 
-    client
+    let rsp = client
         .publish()
         .topic_arn(topic_arn)
         .message(&format!("The water temperature is {} Celcius", temperature))
         .send()
         .await
         .unwrap();
+
+    println!("Message published: {:?}", rsp);
 }
 
 #[tokio::main]
