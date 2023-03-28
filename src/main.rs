@@ -44,10 +44,11 @@ async fn main() {
         println!("Temperature: {}", temperature);
         std::thread::sleep(std::time::Duration::from_secs(1));
 
-        if water_temperature_sensor.get_has_temperature_changed() && !phone_notified {
+        if water_temperature_sensor.is_temperature_back_to_normal() && phone_notified {
             publish_message_to_sms(&client, temperature, &phone_number, &topic_arn).await;
-        } else if !water_temperature_sensor.get_has_temperature_changed() && phone_notified {
+        } else if phone_notified {
             phone_notified = false;
+            water_temperature_sensor.reset_temperature_back_to_normal()
         }
     }
 }

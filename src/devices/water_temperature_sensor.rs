@@ -9,6 +9,7 @@ pub struct WaterTemperatureSensor {
     current_temperature: f32,
     temperature_threshold: f32,
     temperature_has_changed: bool,
+    temperature_back_to_normal: bool,
 }
 
 impl WaterTemperatureSensor {
@@ -18,6 +19,7 @@ impl WaterTemperatureSensor {
             current_temperature: 0.0,
             temperature_threshold: 30.0,
             temperature_has_changed: false,
+            temperature_back_to_normal: false,
         }
     }
 
@@ -34,12 +36,19 @@ impl WaterTemperatureSensor {
         self.current_temperature
     }
 
-    pub fn get_has_temperature_changed(&self) -> bool {
-        self.temperature_has_changed
+    pub fn is_temperature_back_to_normal(&self) -> bool {
+        self.temperature_back_to_normal
+    }
+
+    pub fn reset_temperature_back_to_normal(&mut self) {
+        self.temperature_back_to_normal = false;
     }
 
     fn set_temperature_has_changed(&mut self) {
-        self.temperature_has_changed = self.current_temperature > self.temperature_threshold;
+        let new_temperature_has_changed = self.current_temperature > self.temperature_threshold;
+        if self.temperature_has_changed && !new_temperature_has_changed {
+            self.temperature_back_to_normal = true;
+        }
     }
 
     fn get_temperature_filepath() -> Result<String, String> {
