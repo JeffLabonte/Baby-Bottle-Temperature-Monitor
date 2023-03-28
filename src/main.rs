@@ -10,7 +10,7 @@ async fn publish_message_to_sms(
     phone_number: &String,
     topic_arn: &String,
 ) -> () {
-    client
+    let sub_rsp = client
         .subscribe()
         .topic_arn(topic_arn)
         .protocol("sms")
@@ -18,6 +18,11 @@ async fn publish_message_to_sms(
         .send()
         .await
         .unwrap();
+
+    println!(
+        "Subscribed to phone number: {} -> Response: {:?}",
+        phone_number, sub_rsp
+    );
 
     let rsp = client
         .publish()
