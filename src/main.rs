@@ -44,13 +44,14 @@ async fn main() {
         println!("Temperature: {}", temperature);
         std::thread::sleep(std::time::Duration::from_secs(1));
 
-        if phone_notified {
+        if phone_notified && water_temperature_sensor.is_temperature_back_to_normal() {
+            println!("Resetting the flags ...");
             phone_notified = false;
             water_temperature_sensor.reset_temperature_back_to_normal()
         } else if water_temperature_sensor.is_temperature_back_to_normal() && !phone_notified {
-            println!("Notifying user");
+            println!("Notifying user ...");
             publish_message_to_sms(&client, temperature, &phone_number, &topic_arn).await;
-            println!("Resetting the flags");
+            phone_notified = true;
         }
     }
 }
