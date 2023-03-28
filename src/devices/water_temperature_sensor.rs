@@ -46,7 +46,12 @@ impl WaterTemperatureSensor {
 
     fn set_temperature_has_changed(&mut self) {
         let new_temperature_has_changed = self.current_temperature > self.temperature_threshold;
+        print!(
+            "Temperature has changed: {} -> {}",
+            self.temperature_has_changed, new_temperature_has_changed
+        );
         if self.temperature_has_changed && !new_temperature_has_changed {
+            println!("Temperature back to normal");
             self.temperature_back_to_normal = true;
         }
         self.temperature_has_changed = new_temperature_has_changed;
