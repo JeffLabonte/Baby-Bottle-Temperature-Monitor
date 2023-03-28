@@ -1,13 +1,15 @@
 mod devices;
 
-use log::info;
-
 use crate::devices::water_temperature_sensor::WaterTemperatureSensor;
 
-fn main() {
+#[tokio::main]
+async fn main() {
+    let config = aws_config::load_from_env().await;
+    let client = aws_sdk_sns::Client::new(&config);
+
     let mut water_temperature_sensor = WaterTemperatureSensor::new();
     loop {
-        info!("Temperature: {}\n", water_temperature_sensor.read());
+        println!("Temperature: {}", water_temperature_sensor.read());
         std::thread::sleep(std::time::Duration::from_secs(1));
     }
 }
