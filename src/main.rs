@@ -27,5 +27,13 @@ async fn main() {
             .send()
             .await
             .unwrap();
+
+        client
+            .publish()
+            .topic_arn(&topic_arn)
+            .message(&format!("The water temperature is {}", temperature))
+            .send()
+            .await
+            .unwrap();
     }
 }
