@@ -49,6 +49,7 @@ impl WaterTemperatureSensor {
         if self.temperature_has_changed && !new_temperature_has_changed {
             self.temperature_back_to_normal = true;
         }
+        self.temperature_has_changed = new_temperature_has_changed;
     }
 
     fn get_temperature_filepath() -> Result<String, String> {
