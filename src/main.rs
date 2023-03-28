@@ -45,8 +45,10 @@ async fn main() {
         std::thread::sleep(std::time::Duration::from_secs(1));
 
         if water_temperature_sensor.is_temperature_back_to_normal() && phone_notified {
+            println!("Notifying user");
             publish_message_to_sms(&client, temperature, &phone_number, &topic_arn).await;
         } else if phone_notified {
+            println!("Resetting the flags");
             phone_notified = false;
             water_temperature_sensor.reset_temperature_back_to_normal()
         }
