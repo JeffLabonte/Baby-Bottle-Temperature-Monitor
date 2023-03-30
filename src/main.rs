@@ -12,14 +12,18 @@ async fn publish_message_to_sms(
     to_phone_number: &String,
     from_phone_number: &String,
 ) -> () {
-    client
+    let response = client
         .send_message(OutboundMessage::new(
             to_phone_number.as_str(),
             from_phone_number.as_str(),
             format!("The water bottle temperature is {}", temperature).as_str(),
         ))
-        .await
-        .unwrap();
+        .await;
+
+    match response {
+        Ok(message) => println!("Message sent: {}", message.sid),
+        Err(e) => println!("Error sending message: {}", e),
+    }
 }
 
 #[tokio::main]
