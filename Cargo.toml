@@ -11,3 +11,4 @@ aws-sdk-sns = "0.24.0"
 dotenv = "0.15.0"
 log = "0.4.17"
 tokio = { version = "1", features = ["full"] }
+twilio = "1.0.2"
