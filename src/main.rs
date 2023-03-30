@@ -28,8 +28,6 @@ async fn publish_message_to_sms(temperature: f32) -> () {
 #[tokio::main]
 async fn main() {
     dotenv::dotenv().ok();
-    publish_message_to_sms(0.0).await;
-
     let mut phone_notified = false;
 
     let mut water_temperature_sensor = WaterTemperatureSensor::new();
