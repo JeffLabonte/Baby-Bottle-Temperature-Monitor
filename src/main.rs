@@ -22,11 +22,7 @@ async fn publish_message_to_sms(temperature: f32) -> () {
             format!("The temperature is {}", temperature).as_str(),
         ))
         .await;
-
-    match response {
-        Ok(message) => println!("Message sent: {}", message.sid),
-        Err(e) => println!("Error sending message: {}", e),
-    }
+    println!("Response: {:?}", response);
 }
 
 #[tokio::main]
