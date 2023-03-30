@@ -14,9 +14,9 @@ async fn publish_message_to_sms(
 ) -> () {
     let response = client
         .send_message(OutboundMessage::new(
-            to_phone_number.as_str(),
             from_phone_number.as_str(),
-            format!("The water bottle temperature is {}", temperature).as_str(),
+            to_phone_number.as_str(),
+            format!("The temperature is {}", temperature).as_str(),
         ))
         .await;
 
