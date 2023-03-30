@@ -2,47 +2,39 @@ mod devices;
 
 use std::env;
 
+use twilio::OutboundMessage;
+
 use crate::devices::water_temperature_sensor::WaterTemperatureSensor;
 
 async fn publish_message_to_sms(
-    client: &aws_sdk_sns::Client,
+    client: &twilio::Client,
     temperature: f32,
-    phone_number: &String,
-    topic_arn: &String,
+    to_phone_number: &String,
+    from_phone_number: &String,
 ) -> () {
-    let sub_rsp = client
-        .subscribe()
-        .topic_arn(topic_arn)
-        .protocol("sms")
-        .endpoint(phone_number)
-        .send()
+    client
+        .send_message(OutboundMessage::new(
+            to_phone_number.as_str(),
+            from_phone_number.as_str(),
+            format!("The water bottle temperature is {}", temperature).as_str(),
+        ))
         .await
         .unwrap();
-
-    println!(
-        "Subscribed to phone number: {} -> Response: {:?}",
-        phone_number, sub_rsp
-    );
-
-    let rsp = client
-        .publish()
-        .topic_arn(topic_arn)
-        .message(&format!("The water temperature is {} Celcius", temperature))
-        .send()
-        .await
-        .unwrap();
-
-    println!("Message published: {:?}", rsp);
 }
 
 #[tokio::main]
 async fn main() {
     dotenv::dotenv().ok();
-
-    let config = aws_config::load_from_env().await;
-    let client = aws_sdk_sns::Client::new(&config);
-    let phone_number = env::var("PHONE_NUMBER").expect("PHONE_NUMBER must be set");
-    let topic_arn = env::var("TOPIC_ARN").expect("TOPIC_ARN must be set");
+    let client = twilio::Client::new(
+        env::var("TWILIO_ACCOUNT_ID")
+            .expect("TWILIO_ACCOUNT_ID must be set")
+            .as_str(),
+        env::var("TWILIO_AUTH_TOKEN")
+            .expect("TWILIO_AUTH_TOKEN must be set")
+            .as_str(),
+    );
+    let to_phone_number = env::var("TO_PHONE_NUMBER").expect("PHONE_NUMBER must be set");
+    let from_phone_number = env::var("FROM_PHONE_NUMBER").expect("PHONE_NUMBER must be set");
     let mut phone_notified = false;
 
     let mut water_temperature_sensor = WaterTemperatureSensor::new();
@@ -57,7 +49,8 @@ async fn main() {
             water_temperature_sensor.reset_temperature_back_to_normal()
         } else if water_temperature_sensor.is_temperature_back_to_normal() && !phone_notified {
             println!("Notifying user ...");
-            publish_message_to_sms(&client, temperature, &phone_number, &topic_arn).await;
+            publish_message_to_sms(&client, temperature, &to_phone_number, &from_phone_number)
+                .await;
             phone_notified = true;
         }
     }
