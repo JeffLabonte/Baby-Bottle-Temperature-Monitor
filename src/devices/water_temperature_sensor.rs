@@ -40,6 +40,10 @@ impl WaterTemperatureSensor {
         self.temperature_back_to_normal
     }
 
+    pub fn get_temperature_has_changed(&self) -> bool {
+        self.temperature_has_changed
+    }
+
     pub fn reset_temperature_back_to_normal(&mut self) {
         self.temperature_back_to_normal = false;
     }

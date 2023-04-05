@@ -18,5 +18,5 @@ pub fn write_to_file(file_path: String, message: String) {
 
 pub fn generate_file_name_with_now_time(extension: String) -> String {
     let local_time = chrono::offset::Local::now();
-    format!("{}{}", local_time.format("%Y-%m-%d"), extension)
+    format!("{}{}", local_time.format("%Y-%m-%dT%H"), extension)
 }
