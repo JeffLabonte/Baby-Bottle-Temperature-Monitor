@@ -4,6 +4,7 @@ mod loggings;
 
 use std::env;
 
+use log::{debug, info};
 use loggings::init_logs;
 use twilio::OutboundMessage;
 
@@ -34,29 +35,29 @@ async fn publish_message_to_sms(temperature: f32) -> () {
                 format!("The temperature is {}", temperature).as_str(),
             ))
             .await;
-        println!("Response: {:?}", response);
+        debug!("Response: {:?}", response);
     }
 }
 
 #[tokio::main]
 async fn main() {
     dotenv::dotenv().ok();
-    init_logs();
+    init_logs().unwrap();
 
     let mut phone_notified = false;
 
     let mut water_temperature_sensor = WaterTemperatureSensor::new();
     loop {
         let temperature = water_temperature_sensor.read();
-        println!("Temperature: {}", temperature);
+        info!("Temperature: {}", temperature);
         std::thread::sleep(std::time::Duration::from_secs(1));
 
         if phone_notified && water_temperature_sensor.is_temperature_back_to_normal() {
-            println!("Resetting the flags ...");
+            debug!("Resetting the flags ...");
             phone_notified = false;
             water_temperature_sensor.reset_temperature_back_to_normal()
         } else if water_temperature_sensor.is_temperature_back_to_normal() && !phone_notified {
-            println!("Notifying user ...");
+            debug!("Notifying user ...");
             publish_message_to_sms(temperature).await;
             phone_notified = true;
         }

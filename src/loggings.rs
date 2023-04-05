@@ -1,4 +1,6 @@
-use log::{self, Level, Log, SetLoggerError};
+use log::{self, Level, LevelFilter, Log, SetLoggerError};
+
+use crate::helpers::{generate_file_name_with_now_time, write_to_file};
 
 struct SimpleLogger;
 
@@ -10,6 +12,9 @@ impl Log for SimpleLogger {
     fn log(&self, record: &log::Record) {
         if self.enabled(record.metadata()) {
             let message = format!("{} - {}", record.level(), record.args());
+            let file_path: String = generate_file_name_with_now_time(".log".to_string());
+            write_to_file(file_path, message.to_string());
+            println!("{}", message);
         }
     }
 
@@ -21,5 +26,5 @@ impl Log for SimpleLogger {
 static LOGGER: SimpleLogger = SimpleLogger;
 
 pub fn init_logs() -> Result<(), SetLoggerError> {
-    Ok(())
+    log::set_logger(&LOGGER).map(|()| log::set_max_level(LevelFilter::Info))
 }
