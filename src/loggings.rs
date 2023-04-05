@@ -1,3 +1,4 @@
+use chrono;
 use log::{self, Level, LevelFilter, Log, SetLoggerError};
 
 use crate::helpers::{generate_file_name_with_now_time, write_to_file};
@@ -11,7 +12,14 @@ impl Log for SimpleLogger {
 
     fn log(&self, record: &log::Record) {
         if self.enabled(record.metadata()) {
-            let message = format!("{} - {}", record.level(), record.args());
+            let local_time = chrono::offset::Local::now();
+
+            let message = format!(
+                "{} : {} - {}",
+                local_time.to_rfc3339(),
+                record.level(),
+                record.args()
+            );
             let file_path: String = generate_file_name_with_now_time(".log".to_string());
             write_to_file(file_path, message.to_string());
             println!("{}", message);
