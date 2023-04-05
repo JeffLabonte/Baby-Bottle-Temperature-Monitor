@@ -49,7 +49,10 @@ async fn main() {
     let mut water_temperature_sensor = WaterTemperatureSensor::new();
     loop {
         let temperature = water_temperature_sensor.read();
-        info!("Temperature: {}", temperature);
+        if water_temperature_sensor.get_temperature_has_changed() {
+            info!("Temperature: {}", temperature);
+        }
+
         std::thread::sleep(std::time::Duration::from_secs(1));
 
         if phone_notified && water_temperature_sensor.is_temperature_back_to_normal() {
