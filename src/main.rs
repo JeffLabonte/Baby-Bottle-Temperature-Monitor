@@ -1,7 +1,10 @@
 mod devices;
+mod helpers;
+mod loggings;
 
 use std::env;
 
+use loggings::init_logs;
 use twilio::OutboundMessage;
 
 use crate::devices::water_temperature_sensor::WaterTemperatureSensor;
@@ -38,6 +41,8 @@ async fn publish_message_to_sms(temperature: f32) -> () {
 #[tokio::main]
 async fn main() {
     dotenv::dotenv().ok();
+    init_logs();
+
     let mut phone_notified = false;
 
     let mut water_temperature_sensor = WaterTemperatureSensor::new();
