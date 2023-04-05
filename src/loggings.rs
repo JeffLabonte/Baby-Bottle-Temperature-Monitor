@@ -15,7 +15,7 @@ impl Log for SimpleLogger {
             let local_time = chrono::offset::Local::now();
 
             let message = format!(
-                "{} : {} - {}",
+                "\n{} : {} - {}",
                 local_time.to_rfc3339(),
                 record.level(),
                 record.args()
