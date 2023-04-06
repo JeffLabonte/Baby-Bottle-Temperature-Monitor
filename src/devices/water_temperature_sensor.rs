@@ -7,7 +7,7 @@ const BASE_DIR_TEMPERATURE_SENSOR: &str = "/sys/bus/w1/devices/";
 pub struct WaterTemperatureSensor {
     temperature_filepath: String,
     current_temperature: f32,
-    temperature_threshold: f32,
+    temperature_threshold: u8,
     temperature_has_changed: bool,
     temperature_back_to_normal: bool,
 }
@@ -17,7 +17,7 @@ impl WaterTemperatureSensor {
         WaterTemperatureSensor {
             temperature_filepath: WaterTemperatureSensor::get_temperature_filepath().unwrap(),
             current_temperature: 0.0,
-            temperature_threshold: 30.0,
+            temperature_threshold: 30,
             temperature_has_changed: false,
             temperature_back_to_normal: false,
         }
@@ -49,7 +49,8 @@ impl WaterTemperatureSensor {
     }
 
     fn set_temperature_has_changed(&mut self) {
-        let new_temperature_has_changed = self.current_temperature > self.temperature_threshold;
+        let new_temperature_has_changed =
+            self.current_temperature as u8 > self.temperature_threshold;
         debug!(
             "Temperature has changed: {} -> {}",
             self.temperature_has_changed, new_temperature_has_changed
