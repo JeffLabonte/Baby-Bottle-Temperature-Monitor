@@ -36,6 +36,7 @@ impl WaterTemperatureSensor {
             / 1000.0;
 
         self.set_temperature_has_changed();
+        info!("Current Temperature {}", self.current_temperature);
         self.current_temperature
     }
 
