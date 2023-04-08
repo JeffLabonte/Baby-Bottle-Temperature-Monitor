@@ -1,4 +1,5 @@
-use log::error;
+use log::{error, info};
+use reqwest::StatusCode;
 use std::{collections::HashMap, env};
 
 use crate::devices::water_temperature_sensor::WaterTemperatureSensor;
@@ -27,6 +28,9 @@ pub async fn collect_data(water_temperature_sensor: &WaterTemperatureSensor) -> 
             .await
             .unwrap();
 
-        error!("{}", response.status());
+        match response.status() {
+            StatusCode::CREATED => info!("Data collected successfully"),
+            _ => error!("{}", response.status()),
+        };
     }
 }
