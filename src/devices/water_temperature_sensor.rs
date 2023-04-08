@@ -58,7 +58,7 @@ impl WaterTemperatureSensor {
             temperature_difference *= -1.0;
         }
 
-        temperature_difference > 1.00
+        temperature_difference != 0.00
     }
 
     fn set_temperature_has_changed(&mut self) {
