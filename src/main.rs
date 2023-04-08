@@ -1,9 +1,11 @@
+mod data_collection;
 mod devices;
 mod helpers;
 mod loggings;
 
 use std::env;
 
+use data_collection::collect_data;
 use log::{debug, info};
 use loggings::init_logs;
 use twilio::OutboundMessage;
@@ -54,6 +56,7 @@ async fn main() {
         }
 
         std::thread::sleep(std::time::Duration::from_secs(1));
+        collect_data(&water_temperature_sensor).await;
 
         if phone_notified && water_temperature_sensor.is_temperature_back_to_normal() {
             debug!("Resetting the flags ...");

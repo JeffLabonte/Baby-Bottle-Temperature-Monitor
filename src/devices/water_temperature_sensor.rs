@@ -5,8 +5,9 @@ use log::{debug, info};
 const BASE_DIR_TEMPERATURE_SENSOR: &str = "/sys/bus/w1/devices/";
 
 pub struct WaterTemperatureSensor {
+    pub current_temperature: f32,
     temperature_filepath: String,
-    current_temperature: f32,
+    last_temperature: f32,
     temperature_threshold: u8,
     temperature_has_changed: bool,
     temperature_back_to_normal: bool,
@@ -17,6 +18,7 @@ impl WaterTemperatureSensor {
         WaterTemperatureSensor {
             temperature_filepath: WaterTemperatureSensor::get_temperature_filepath().unwrap(),
             current_temperature: 0.0,
+            last_temperature: 0.0,
             temperature_threshold: 30,
             temperature_has_changed: false,
             temperature_back_to_normal: false,
@@ -25,6 +27,7 @@ impl WaterTemperatureSensor {
 
     pub fn read(&mut self) -> f32 {
         debug!("Reading temperature from {}\n", self.temperature_filepath);
+        self.last_temperature = self.current_temperature;
         self.current_temperature = fs::read_to_string(&self.temperature_filepath)
             .unwrap()
             .trim()
@@ -46,6 +49,15 @@ impl WaterTemperatureSensor {
 
     pub fn reset_temperature_back_to_normal(&mut self) {
         self.temperature_back_to_normal = false;
+    }
+
+    pub fn should_collect_data(&self) -> bool {
+        let mut temperature_difference = self.current_temperature - self.last_temperature;
+        if temperature_difference < 0.00 {
+            temperature_difference *= -1.0;
+        }
+
+        temperature_difference > 1.00
     }
 
     fn set_temperature_has_changed(&mut self) {
