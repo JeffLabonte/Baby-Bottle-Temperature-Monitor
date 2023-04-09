@@ -53,12 +53,7 @@ impl WaterTemperatureSensor {
     }
 
     pub fn should_collect_data(&self) -> bool {
-        let mut temperature_difference = self.current_temperature - self.last_temperature;
-        if temperature_difference < 0.00 {
-            temperature_difference *= -1.0;
-        }
-
-        temperature_difference > 0.200
+        self.current_temperature != self.last_temperature
     }
 
     fn set_temperature_has_changed(&mut self) {
