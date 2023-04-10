@@ -19,18 +19,20 @@ pub async fn collect_data(water_temperature_sensor: &WaterTemperatureSensor) -> 
         let url = env::var("DATA_COLLECTION_URL").expect("DATA_COLLECTION_URL must be set");
         let data_collection_auth =
             env::var("DATA_COLLECTION_SECRET").expect("DATA_COLLECTION_SECRET must be set");
-        let response = reqwest::Client::new()
+        let result_query = reqwest::Client::new()
             .post(url)
             .header("Content-Type", "application/json")
             .header("X-Require-Whisk-Auth", data_collection_auth)
             .json(&json_body)
             .send()
-            .await
-            .unwrap();
+            .await;
 
-        match response.status() {
-            StatusCode::CREATED => info!("Data collected successfully"),
-            _ => error!("{}", response.status()),
+        match result_query {
+            Ok(response) => match response.status() {
+                StatusCode::CREATED => info!("Data collected successfully"),
+                _ => error!("{}", response.status()),
+            },
+            Err(e) => error!("Error: {}", e),
         };
     }
 }
