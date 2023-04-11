@@ -115,3 +115,34 @@ pub async fn collect_data(water_temperature_sensor: &WaterTemperatureSensor) -> 
         };
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use crate::devices::water_temperature_sensor::WaterTemperatureSensor;
+
+    fn mock_env_variable(key_value_variables: HashMap<String, String>) {
+        for key_value_variable in key_value_variables {
+            env::set_var(key_value_variable.0, key_value_variable.1);
+        }
+    }
+
+    #[tokio::test]
+    async fn collect_data_should_send_data_to_the_server() {
+        let key_value_variables = HashMap::from([
+            (
+                DATA_COLLECTION_URL_KEY.to_string(),
+                "http://127.0.0.1".to_string(),
+            ),
+            (DATA_COLLECTION_SECRET_KEY.to_string(), "Nope".to_string()),
+            (DATA_COLLECTION_ENABLED_KEY.to_string(), "true".to_string()),
+        ]);
+
+        mock_env_variable(key_value_variables);
+
+        let mut water_temperature_sensor = WaterTemperatureSensor::new();
+        water_temperature_sensor.current_temperature = 10.0;
+
+        collect_data(&water_temperature_sensor).await;
+    }
+}
