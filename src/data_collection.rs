@@ -1,5 +1,77 @@
 use log::{error, info};
+
 use reqwest::StatusCode;
+cfg_if::cfg_if! {
+    if #[cfg(test)]{
+        use mockall::automock;
+        use core::fmt::Formatter;
+        use std::fmt::Display;
+
+        struct Client{
+            url_passed_to_post: String,
+            headers: Vec<(String, String)>,
+            body: HashMap<String, f32>,
+        }
+
+        struct Response {
+            status_code: StatusCode,
+        }
+
+        #[automock]
+        impl Response {
+            pub fn status(&self) -> StatusCode {
+                self.status_code
+            }
+        }
+
+        impl Client{
+            pub fn new() -> Self {
+                Client{
+                    url_passed_to_post: "".to_string(),
+                    headers: Vec::new(),
+                    body: HashMap::new(),
+                }
+            }
+
+            pub fn post(&self, url: String) -> Self {
+                Client{
+                    url_passed_to_post: url,
+                    headers: self.headers.clone(),
+                    body: self.body.clone(),
+
+                }
+            }
+
+            pub fn header(&self, header_name: &str, header_value: &str) -> Self {
+                let mut headers = self.headers.clone();
+                headers.push((header_name.to_string(), header_value.to_string()));
+                Client { url_passed_to_post: self.url_passed_to_post.clone(), headers: self.headers.clone(), body: self.body.clone() }
+            }
+
+            pub fn json<'a>(&self, json_body: &HashMap<&'a str, f32>) -> Self {
+                Client {
+                    url_passed_to_post: self.url_passed_to_post.clone(),
+                    headers: self.headers.clone(),
+                    body: json_body.iter().map(|(k, v)| (k.to_string(), *v)).collect(),
+                }
+            }
+
+            pub async fn send(&self) -> Result<Response, String> {
+                Ok(Response { status_code: StatusCode::CREATED })
+            }
+        }
+
+        impl Display for Response {
+            fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
+                write!(f, "Status Code: {}", self.status_code)
+            }
+        }
+
+    }else {
+        use reqwest::Client;
+    }
+}
+
 use std::{collections::HashMap, env};
 
 use crate::devices::water_temperature_sensor::WaterTemperatureSensor;
