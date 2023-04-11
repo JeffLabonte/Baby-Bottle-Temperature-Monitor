@@ -76,6 +76,10 @@ use std::{collections::HashMap, env};
 
 use crate::devices::water_temperature_sensor::WaterTemperatureSensor;
 
+static DATA_COLLECTION_URL_KEY: &str = "DATABASE_COLLECTION_URL";
+static DATA_COLLECTION_ENABLED_KEY: &str = "DATABASE_COLLECTION_ENABLED";
+static DATA_COLLECTION_SECRET_KEY: &str = "DATABASE_COLLECTION_SECRET";
+
 pub async fn collect_data(water_temperature_sensor: &WaterTemperatureSensor) -> () {
     let collection_enabled =
         env::var("DATA_COLLECTION_ENABLED").expect("DATA_COLLECTION_ENABLED must be set");
