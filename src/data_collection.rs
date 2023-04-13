@@ -169,6 +169,8 @@ mod tests {
         let mut water_temperature_sensor = WaterTemperatureSensor::new();
         water_temperature_sensor.current_temperature = 10.0;
 
-        collect_data(&water_temperature_sensor).await;
+        let result = collect_data(&water_temperature_sensor).await;
+
+        assert!(result.is_ok());
     }
 }
