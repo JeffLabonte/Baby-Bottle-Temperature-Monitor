@@ -80,12 +80,27 @@ static DATA_COLLECTION_URL_KEY: &str = "DATA_COLLECTION_URL";
 static DATA_COLLECTION_ENABLED_KEY: &str = "DATA_COLLECTION_ENABLED";
 static DATA_COLLECTION_SECRET_KEY: &str = "DATA_COLLECTION_SECRET";
 
-pub async fn collect_data(water_temperature_sensor: &WaterTemperatureSensor) -> () {
-    let collection_enabled = env::var(DATA_COLLECTION_ENABLED_KEY.to_string())
-        .expect("DATA_COLLECTION_ENABLED must be set");
+pub enum DataCollectionError {
+    DataCollectionDisabled,
+    ValueHasNotChanged,
+    DataCollectionError(StatusCode),
+    SystemError(String),
+}
 
-    if collection_enabled.trim().parse().unwrap() && water_temperature_sensor.should_collect_data()
-    {
+pub async fn collect_data(
+    water_temperature_sensor: &WaterTemperatureSensor,
+) -> Result<StatusCode, DataCollectionError> {
+    let collection_enabled: bool = env::var(DATA_COLLECTION_ENABLED_KEY.to_string())
+        .expect("DATA_COLLECTION_ENABLED must be set")
+        .trim()
+        .parse()
+        .unwrap();
+
+    if !collection_enabled {
+        return Err(DataCollectionError::DataCollectionDisabled);
+    }
+
+    if water_temperature_sensor.should_collect_data() {
         let mut json_body = HashMap::new();
         json_body.insert(
             "temperature_in_celcius",
@@ -108,11 +123,22 @@ pub async fn collect_data(water_temperature_sensor: &WaterTemperatureSensor) -> 
 
         match result_query {
             Ok(response) => match response.status() {
-                StatusCode::CREATED => info!("Data collected successfully"),
-                _ => error!("{}", response.status()),
+                StatusCode::OK | StatusCode::CREATED => {
+                    info!("Data collected successfully");
+                    return Ok(response.status());
+                }
+                _ => {
+                    error!("{}", response.status());
+                    return Err(DataCollectionError::DataCollectionError(response.status()));
+                }
             },
-            Err(e) => error!("Error: {}", e),
-        };
+            Err(e) => {
+                error!("Error: {}", e);
+                return Err(DataCollectionError::SystemError(e.to_string()));
+            }
+        }
+    } else {
+        return Err(DataCollectionError::ValueHasNotChanged);
     }
 }
 
