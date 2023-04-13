@@ -80,6 +80,7 @@ static DATA_COLLECTION_URL_KEY: &str = "DATA_COLLECTION_URL";
 static DATA_COLLECTION_ENABLED_KEY: &str = "DATA_COLLECTION_ENABLED";
 static DATA_COLLECTION_SECRET_KEY: &str = "DATA_COLLECTION_SECRET";
 
+#[derive(Debug)]
 pub enum DataCollectionError {
     DataCollectionDisabled,
     ValueHasNotChanged,
@@ -173,6 +174,9 @@ mod tests {
         let result = collect_data(&water_temperature_sensor).await;
 
         assert!(result.is_ok());
+
+        let unwrapped_result = result.unwrap();
+        assert!(unwrapped_result == StatusCode::CREATED);
     }
 
     #[tokio::test]
