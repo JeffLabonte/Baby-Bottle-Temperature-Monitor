@@ -1,0 +1,45 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "type": "lldb",
+            "request": "launch",
+            "name": "Debug executable 'baby-bottle-temperature-monitor'",
+            "cargo": {
+                "args": [
+                    "build",
+                    "--bin=baby-bottle-temperature-monitor",
+                    "--package=baby-bottle-temperature-monitor"
+                ],
+                "filter": {
+                    "name": "baby-bottle-temperature-monitor",
+                    "kind": "bin"
+                }
+            },
+            "args": [],
+            "cwd": "${workspaceFolder}"
+        },
+        {
+            "type": "lldb",
+            "request": "launch",
+            "name": "Debug unit tests in executable 'baby-bottle-temperature-monitor'",
+            "cargo": {
+                "args": [
+                    "test",
+                    "--no-run",
+                    "--bin=baby-bottle-temperature-monitor",
+                    "--package=baby-bottle-temperature-monitor"
+                ],
+                "filter": {
+                    "name": "baby-bottle-temperature-monitor",
+                    "kind": "bin"
+                }
+            },
+            "args": [],
+            "cwd": "${workspaceFolder}"
+        }
+    ]
+}
