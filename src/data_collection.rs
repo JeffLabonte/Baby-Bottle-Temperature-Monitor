@@ -149,6 +149,7 @@ mod tests {
 
     fn mock_env_variable(key_value_variables: HashMap<String, String>) {
         for key_value_variable in key_value_variables {
+            env::remove_var(&key_value_variable.0);
             env::set_var(key_value_variable.0, key_value_variable.1);
         }
     }
@@ -172,5 +173,26 @@ mod tests {
         let result = collect_data(&water_temperature_sensor).await;
 
         assert!(result.is_ok());
+    }
+
+    #[tokio::test]
+    async fn collect_data_with_data_collection_disabled_should_return_error() {
+        let key_value_variables = HashMap::from([
+            (
+                DATA_COLLECTION_URL_KEY.to_string(),
+                "http://127.0.0.1".to_string(),
+            ),
+            (DATA_COLLECTION_SECRET_KEY.to_string(), "Nope".to_string()),
+            (DATA_COLLECTION_ENABLED_KEY.to_string(), "false".to_string()),
+        ]);
+
+        mock_env_variable(key_value_variables);
+
+        let mut water_temperature_sensor: WaterTemperatureSensor = WaterTemperatureSensor::new();
+        water_temperature_sensor.current_temperature = 10.0;
+
+        let result = collect_data(&water_temperature_sensor).await;
+
+        assert!(result.is_err());
     }
 }
