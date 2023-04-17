@@ -23,7 +23,7 @@ jobs:
           override: true
 
       - name: Setup for Code
-        run: make setup-test
+        run: make setup_test
 
       - name: Run Tests
         run: make test
