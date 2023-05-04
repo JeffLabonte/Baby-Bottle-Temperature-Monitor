@@ -90,14 +90,18 @@ pub enum DataCollectionError {
 }
 
 impl Display for DataCollectionError {
-    fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
+    fn fmt(&self, formatter: &mut Formatter<'_>) -> std::fmt::Result {
         match self {
-            DataCollectionError::DataCollectionDisabled => write!(f, "Data collection is disabled"),
-            DataCollectionError::ValueHasNotChanged => write!(f, "Value has not changed"),
-            DataCollectionError::DataCollectionError(status_code) => {
-                write!(f, "Data collection error: {}", status_code)
+            DataCollectionError::DataCollectionDisabled => {
+                write!(formatter, "Data collection is disabled")
             }
-            DataCollectionError::SystemError(message) => write!(f, "System error: {}", message),
+            DataCollectionError::ValueHasNotChanged => write!(formatter, "Value has not changed"),
+            DataCollectionError::DataCollectionError(status_code) => {
+                write!(formatter, "Data collection error: {}", status_code)
+            }
+            DataCollectionError::SystemError(message) => {
+                write!(formatter, "System error: {}", message)
+            }
         }
     }
 }
