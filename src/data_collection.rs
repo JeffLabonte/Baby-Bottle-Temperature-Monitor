@@ -1,11 +1,12 @@
 use log::{error, info};
 
+use core::fmt::Formatter;
 use reqwest::StatusCode;
+use std::fmt::Display;
+
 cfg_if::cfg_if! {
     if #[cfg(test)]{
         use mockall::automock;
-        use core::fmt::Formatter;
-        use std::fmt::Display;
 
         struct Client{
             url_passed_to_post: String,
@@ -88,6 +89,19 @@ pub enum DataCollectionError {
     SystemError(String),
 }
 
+impl Display for DataCollectionError {
+    fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
+        match self {
+            DataCollectionError::DataCollectionDisabled => write!(f, "Data collection is disabled"),
+            DataCollectionError::ValueHasNotChanged => write!(f, "Value has not changed"),
+            DataCollectionError::DataCollectionError(status_code) => {
+                write!(f, "Data collection error: {}", status_code)
+            }
+            DataCollectionError::SystemError(message) => write!(f, "System error: {}", message),
+        }
+    }
+}
+
 pub async fn collect_data(
     water_temperature_sensor: &WaterTemperatureSensor,
 ) -> Result<StatusCode, DataCollectionError> {
@@ -97,7 +111,7 @@ pub async fn collect_data(
         .parse()
         .unwrap();
 
-    if !collection_enabled {
+    if collection_enabled == false {
         return Err(DataCollectionError::DataCollectionDisabled);
     }
 
