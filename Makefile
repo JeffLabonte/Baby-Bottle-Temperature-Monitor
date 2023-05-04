@@ -1,7 +1,10 @@
 setup_ubuntu: 
 	sudo apt install -y libssl-dev pkg-config
 
-setup_test: setup_ubuntu
+setup_fedora:
+	sudo dnf install -y openssl-devel pkg-config
+
+setup_test:
 	cargo install cargo-tarpaulin
 
 test: setup_test
