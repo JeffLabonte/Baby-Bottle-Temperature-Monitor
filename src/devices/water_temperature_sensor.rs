@@ -1,3 +1,5 @@
+use chrono::{DateTime, Utc};
+
 pub struct WaterTemperatureSensor {
     pub current_temperature: f32,
     temperature_filepath: String,
@@ -5,6 +7,7 @@ pub struct WaterTemperatureSensor {
     temperature_threshold: u8,
     temperature_has_changed: bool,
     temperature_back_to_normal: bool,
+    temperatures_collected_for_rate: Vec<(DateTime<Utc>, f32)>,
 }
 
 cfg_if::cfg_if! {
@@ -22,6 +25,7 @@ cfg_if::cfg_if! {
                     temperature_threshold: 30,
                     temperature_has_changed: false,
                     temperature_back_to_normal: false,
+                    temperatures_collected_for_rate: Vec::new(),
                 }
             }
 
@@ -62,6 +66,7 @@ cfg_if::cfg_if! {
                     temperature_threshold: 30,
                     temperature_has_changed: false,
                     temperature_back_to_normal: false,
+                    temperatures_collected_for_rate: Vec::new(),
                 }
             }
 
