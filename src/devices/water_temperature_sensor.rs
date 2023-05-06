@@ -94,6 +94,10 @@ cfg_if::cfg_if! {
                     / 1000.0;
 
                 self.set_temperature_has_changed();
+                if self.should_collect_for_sampling()
+                 && self.temperatures_collected_for_rate.len() < SAMPLING_SIZE {
+                    self.temperatures_collected_for_rate.push((Utc::now(), self.current_temperature));
+                }
                 info!("Current Temperature {}", self.current_temperature);
                 std::thread::sleep(std::time::Duration::from_secs(QUERY_DELAY_TIME_IN_SECONDS));
             }
@@ -112,6 +116,35 @@ cfg_if::cfg_if! {
 
             pub fn should_collect_data(&self) -> bool {
                 self.current_temperature != self.last_temperature
+            }
+
+            pub fn is_sampling_ready(&mut self) -> bool {
+                let mut is_sampling_ready = false;
+                if self.should_collect_for_sampling()
+                 && self.temperatures_collected_for_rate.len() > SAMPLING_SIZE {
+                    is_sampling_ready = true;
+                }
+
+                is_sampling_ready
+            }
+
+            pub fn get_cooling_rate_per_sec(&mut self) -> f32{
+                let first_datetime_temperature = self.temperatures_collected_for_rate.first().unwrap();
+                let last_datetime_temperature = self.temperatures_collected_for_rate.last().unwrap();
+
+                let time_difference = last_datetime_temperature.0.signed_duration_since(first_datetime_temperature.0).num_seconds() as f32;
+                let temperature_difference = last_datetime_temperature.1 - first_datetime_temperature.1;
+
+                return temperature_difference / time_difference;
+            }
+
+            pub fn flush(&mut self) {
+                self.temperatures_collected_for_rate.clear()
+            }
+
+            fn should_collect_for_sampling(&self) -> bool {
+                self.current_temperature > self.temperature_threshold as f32
+                 && self.current_temperature < self.last_temperature
             }
 
             fn set_temperature_has_changed(&mut self) {
@@ -146,30 +179,6 @@ cfg_if::cfg_if! {
                 Err(String::from("Unable to find temperature sensor"))
             }
 
-            pub fn is_sampling_ready(&mut self) -> bool {
-                if self.current_temperature > self.temperature_threshold as f32
-                 && self.current_temperature < self.last_temperature
-                 && self.temperatures_collected_for_rate.len() < SAMPLING_SIZE {
-                    self.temperatures_collected_for_rate.push((Utc::now(), self.current_temperature));
-                    return false;
-                }
-
-                return true;
-            }
-
-            pub fn get_cooling_rate_per_sec(&mut self) -> f32{
-                let first_datetime_temperature = self.temperatures_collected_for_rate.first().unwrap();
-                let last_datetime_temperature = self.temperatures_collected_for_rate.last().unwrap();
-
-                let time_difference = last_datetime_temperature.0.signed_duration_since(first_datetime_temperature.0).num_seconds() as f32;
-                let temperature_difference = last_datetime_temperature.1 - first_datetime_temperature.1;
-
-                return (temperature_difference / time_difference);
-            }
-
-            pub fn flush(&mut self) {
-                self.temperatures_collected_for_rate.clear()
-            }
         }
     }
 }
