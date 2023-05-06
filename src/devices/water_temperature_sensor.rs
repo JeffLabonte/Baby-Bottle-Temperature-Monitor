@@ -96,6 +96,7 @@ cfg_if::cfg_if! {
                 self.set_temperature_has_changed();
                 if self.should_collect_for_sampling()
                  && self.temperatures_collected_for_rate.len() < SAMPLING_SIZE {
+                    info!("Collecting temperature for sampling");
                     self.temperatures_collected_for_rate.push((Utc::now(), self.current_temperature));
                 }
                 info!("Current Temperature {}", self.current_temperature);
@@ -124,7 +125,7 @@ cfg_if::cfg_if! {
                  && self.temperatures_collected_for_rate.len() > SAMPLING_SIZE {
                     is_sampling_ready = true;
                 }
-
+                info!("Is sampling ready: {}", is_sampling_ready);
                 is_sampling_ready
             }
 
