@@ -67,7 +67,7 @@ cfg_if::cfg_if! {
         use log::{debug, info};
 
         const BASE_DIR_TEMPERATURE_SENSOR: &str = "/sys/bus/w1/devices/";
-        const SAMPLING_SIZE: usize = 3;
+        const SAMPLING_SIZE: usize = 300;
         const QUERY_DELAY_TIME_IN_SECONDS: u64 = 1;
 
         impl WaterTemperatureSensor {
