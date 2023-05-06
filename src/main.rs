@@ -67,12 +67,13 @@ async fn main() {
             water_temperature_sensor.reset_temperature_back_to_normal()
         } else if water_temperature_sensor.is_temperature_back_to_normal() && !phone_notified {
             debug!("Notifying user ...");
-            publish_message_to_sms(temperature).await;
+            publish_message_to_sms(water_temperature_sensor.current_temperature).await;
             phone_notified = true;
         }
 
         if water_temperature_sensor.is_sampling_ready() {
             let cooling_rate = water_temperature_sensor.get_cooling_rate_per_sec();
+            water_temperature_sensor.flush();
             info!("Cooling rate: {}", cooling_rate);
         }
     }

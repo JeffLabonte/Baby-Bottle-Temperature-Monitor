@@ -53,6 +53,10 @@ cfg_if::cfg_if! {
                 true
             }
 
+            pub fn flush(&mut self) {
+                self.temperatures_collected_for_rate.clear()
+            }
+
             pub fn get_cooling_rate_per_sec(&mut self) -> f32{
                 0.0
             }
@@ -146,11 +150,11 @@ cfg_if::cfg_if! {
                 if self.current_temperature > self.temperature_threshold as f32
                  && self.current_temperature < self.last_temperature
                  && self.temperatures_collected_for_rate.len() < SAMPLING_SIZE {
-                    self.temperatures_collected_for_rate.push((Utc::now(), self.current_temperature))
+                    self.temperatures_collected_for_rate.push((Utc::now(), self.current_temperature));
                     return false;
                 }
 
-                return true
+                return true;
             }
 
             pub fn get_cooling_rate_per_sec(&mut self) -> f32{
@@ -160,7 +164,7 @@ cfg_if::cfg_if! {
                 let time_difference = last_datetime_temperature.0.signed_duration_since(first_datetime_temperature.0).num_seconds() as f32;
                 let temperature_difference = last_datetime_temperature.1 - first_datetime_temperature.1;
 
-                return (temperature_difference / time_difference)
+                return (temperature_difference / time_difference);
             }
 
             pub fn flush(&mut self) {
