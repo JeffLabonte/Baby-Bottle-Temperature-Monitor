@@ -44,7 +44,7 @@ async fn publish_message_to_sms(temperature: f32) -> () {
 #[tokio::main]
 async fn main() {
     dotenv::dotenv().ok();
-    init_logs().unwrap();
+    init_logs().unwrap_or_else(|_| panic!("Unable to initialize logs"));
 
     let mut phone_notified = false;
 
