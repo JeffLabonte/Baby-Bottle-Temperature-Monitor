@@ -18,7 +18,7 @@ pub fn write_to_file(file_path: String, message: String) {
 
 pub fn generate_file_name_with_now_time(extension: String) -> String {
     let local_time = chrono::offset::Local::now();
-    format!("{}{}", local_time.format("%Y-%m-%dT%H:XX"), extension)
+    format!("logs/{}{}", local_time.format("%Y-%m-%d"), extension)
 }
 
 #[cfg(test)]
@@ -31,7 +31,7 @@ mod tests {
         let current_time = chrono::offset::Local::now();
         assert_eq!(file_name.contains(".log"), true);
         assert_eq!(
-            file_name.contains(&current_time.format("%Y-%m-%dT%H:XX").to_string()),
+            file_name.contains(&current_time.format("%Y-%m-%d").to_string()),
             true
         );
     }
