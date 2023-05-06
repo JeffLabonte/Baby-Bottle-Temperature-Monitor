@@ -67,7 +67,7 @@ cfg_if::cfg_if! {
         use log::{debug, info};
 
         const BASE_DIR_TEMPERATURE_SENSOR: &str = "/sys/bus/w1/devices/";
-        const SAMPLING_SIZE: usize = 300;
+        const SAMPLING_SIZE: usize = 3;
         const QUERY_DELAY_TIME_IN_SECONDS: u64 = 1;
 
         impl WaterTemperatureSensor {
@@ -122,7 +122,7 @@ cfg_if::cfg_if! {
             pub fn is_sampling_ready(&mut self) -> bool {
                 let mut is_sampling_ready = false;
                 if self.should_collect_for_sampling()
-                 && self.temperatures_collected_for_rate.len() > SAMPLING_SIZE {
+                 && self.temperatures_collected_for_rate.len() >= SAMPLING_SIZE {
                     is_sampling_ready = true;
                 }
                 info!("Is sampling ready: {}", is_sampling_ready);
