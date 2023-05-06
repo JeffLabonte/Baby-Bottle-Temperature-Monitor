@@ -50,13 +50,16 @@ async fn main() {
 
     let mut water_temperature_sensor = WaterTemperatureSensor::new();
     loop {
-        let temperature = water_temperature_sensor.read();
-        if water_temperature_sensor.get_temperature_has_changed() {
-            info!("Temperature: {}", temperature);
-        }
+        water_temperature_sensor.read();
 
-        std::thread::sleep(std::time::Duration::from_secs(1));
-        collect_data(&water_temperature_sensor).await;
+        match collect_data(&water_temperature_sensor).await {
+            Ok(status_code) => {
+                debug!("Data collection status code: {}", status_code);
+            }
+            Err(err) => {
+                debug!("Data collection error: {}", err);
+            }
+        }
 
         if phone_notified && water_temperature_sensor.is_temperature_back_to_normal() {
             debug!("Resetting the flags ...");
@@ -66,6 +69,11 @@ async fn main() {
             debug!("Notifying user ...");
             publish_message_to_sms(temperature).await;
             phone_notified = true;
+        }
+
+        if water_temperature_sensor.is_sampling_ready() {
+            let cooling_rate = water_temperature_sensor.get_cooling_rate_per_sec();
+            info!("Cooling rate: {}", cooling_rate);
         }
     }
 }
