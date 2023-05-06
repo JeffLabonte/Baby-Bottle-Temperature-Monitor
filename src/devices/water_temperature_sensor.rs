@@ -63,6 +63,8 @@ cfg_if::cfg_if! {
         use log::{debug, info};
 
         const BASE_DIR_TEMPERATURE_SENSOR: &str = "/sys/bus/w1/devices/";
+        const SAMPLING_SIZE: usize = 300;
+        const QUERY_DELAY_TIME_IN_SECONDS: u64 = 1;
 
         impl WaterTemperatureSensor {
             pub fn new() -> Self {
@@ -77,7 +79,7 @@ cfg_if::cfg_if! {
                 }
             }
 
-            pub fn read(&mut self) -> f32 {
+            pub fn read(&mut self) {
                 debug!("Reading temperature from {}\n", self.temperature_filepath);
                 self.last_temperature = self.current_temperature;
                 self.current_temperature = fs::read_to_string(&self.temperature_filepath)
@@ -89,7 +91,7 @@ cfg_if::cfg_if! {
 
                 self.set_temperature_has_changed();
                 info!("Current Temperature {}", self.current_temperature);
-                self.current_temperature
+                std::thread::sleep(std::time::Duration::from_secs(QUERY_DELAY_TIME_IN_SECONDS));
             }
 
             pub fn is_temperature_back_to_normal(&self) -> bool {
