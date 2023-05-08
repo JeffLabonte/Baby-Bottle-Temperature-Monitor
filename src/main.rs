@@ -73,7 +73,11 @@ async fn main() {
 
         if water_temperature_sensor.is_sampling_ready() {
             let cooling_rate = water_temperature_sensor.get_cooling_rate_per_sec();
-            water_temperature_sensor.flush();
+            if cooling_rate > 0.0 {
+                water_temperature_sensor.flush();
+                info!("Temperature is cooling down");
+            }
+
             info!("Cooling rate: {}", cooling_rate);
         }
     }

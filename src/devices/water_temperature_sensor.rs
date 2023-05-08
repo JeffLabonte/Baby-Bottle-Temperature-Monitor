@@ -130,8 +130,14 @@ cfg_if::cfg_if! {
             }
 
             pub fn get_cooling_rate_per_sec(&mut self) -> f32{
-                let first_datetime_temperature = self.temperatures_collected_for_rate.first().unwrap();
-                let last_datetime_temperature = self.temperatures_collected_for_rate.last().unwrap();
+                let first_datetime_temperature = match self.temperatures_collected_for_rate.first() {
+                    Some(first_datetime_temperature) => first_datetime_temperature,
+                    None => return -1.0,
+                };
+                let last_datetime_temperature = match self.temperatures_collected_for_rate.last() {
+                    Some(last_datetime_temperature) => last_datetime_temperature,
+                    None => return -1.0,
+                };
 
                 let time_difference = last_datetime_temperature.0.signed_duration_since(first_datetime_temperature.0).num_seconds() as f32;
                 let temperature_difference = last_datetime_temperature.1 - first_datetime_temperature.1;
