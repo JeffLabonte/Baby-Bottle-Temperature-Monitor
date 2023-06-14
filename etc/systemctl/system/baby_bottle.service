@@ -1,0 +1,10 @@
+[Unit]
+Description=Baby Bottle Temperature Monitor
+
+[Service]
+Type=simple
+ExecStart=/usr/bin/baby-bottle-temperature-monitor
+Restart=on-failure
+
+[Install]
+WantedBy=multi-user.target
