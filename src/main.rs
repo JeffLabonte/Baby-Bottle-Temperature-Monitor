@@ -12,6 +12,13 @@ use twilio::OutboundMessage;
 
 use crate::devices::water_temperature_sensor::WaterTemperatureSensor;
 
+#[cfg(debug_assertions)]
+const ENVIRONMENT_FILE_PATH: &str = ".env";
+
+#[cfg(not(debug_assertions))]
+const ENVIRONMENT_FILE_PATH: &str = "/etc/babybottle/configs.conf";
+
+
 fn get_phone_numbers() -> Vec<String> {
     env::var("TO_PHONE_NUMBERS")
         .expect("TO_PHONE_NUMBERS must be set")
@@ -43,7 +50,7 @@ async fn publish_message_to_sms(temperature: f32) -> () {
 
 #[tokio::main]
 async fn main() {
-    dotenv::dotenv().ok();
+    dotenv::from_filename(ENVIRONMENT_FILE_PATH).ok();
     init_logs().unwrap_or_else(|_| panic!("Unable to initialize logs"));
 
     let mut phone_notified = false;
