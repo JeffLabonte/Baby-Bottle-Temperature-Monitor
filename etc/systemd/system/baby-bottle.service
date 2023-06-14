@@ -2,7 +2,7 @@
 Description=Baby Bottle Temperature Monitor
 
 [Service]
-Type=simple
+Type=forking
 ExecStart=/usr/bin/baby-bottle-temperature-monitor
 Restart=on-failure
 
