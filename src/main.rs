@@ -16,7 +16,7 @@ use crate::devices::water_temperature_sensor::WaterTemperatureSensor;
 const ENVIRONMENT_FILE_PATH: &str = ".env";
 
 #[cfg(not(debug_assertions))]
-const ENVIRONMENT_FILE_PATH: &str = "/etc/babybottle/configs.conf";
+const ENVIRONMENT_FILE_PATH: &str = "/etc/baby_bottle/configs.conf";
 
 
 fn get_phone_numbers() -> Vec<String> {
