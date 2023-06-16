@@ -2,6 +2,12 @@ use chrono;
 use std::fs::File;
 use std::io::prelude::*;
 
+#[cfg(not(debug_assertions))]
+static LOG_PATH: &str = "/var/log/baby_bottle/";
+
+#[cfg(debug_assertions)]
+static LOG_PATH: &str = "logs/";
+
 pub fn write_to_file(file_path: String, message: String) {
     let mut file: File = match File::options().append(true).open(&file_path) {
         Ok(f) => f,
@@ -18,7 +24,7 @@ pub fn write_to_file(file_path: String, message: String) {
 
 pub fn generate_file_name_with_now_time(extension: String) -> String {
     let local_time = chrono::offset::Local::now();
-    format!("logs/{}{}", local_time.format("%Y-%m-%d"), extension)
+    format!("{}{}{}",LOG_PATH, local_time.format("%Y-%m-%d"), extension)
 }
 
 #[cfg(test)]
