@@ -2,7 +2,7 @@
 
 ## Context
 
-My first botn couldn't be breastfed so we had to use formula.
+My first botn couldn't be breastfed so we had to use milk powder formula..
 
 It is recommended to sterilize the water you use to reconstitute de powder milk.
 
