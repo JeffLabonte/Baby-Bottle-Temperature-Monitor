@@ -2,9 +2,11 @@
 
 ## Context
 
-After the birth of my child, I wanted to make it easier to make the formula for my child. The water that you use for formula has to be sterilized. It means that you need to boil the water and wait for it to cool down to room temperature.
+My first botn couldn't be breastfed so we had to use formula.
 
-My wife and I noticed that the formula is easier to dilute when the water is above 30 degrees Celsius. I wanted to make diluting the formula brainless, this is why I created this project.
+It is recommended to sterilize the water you use to reconstitute de powder milk.
+
+We noticed that it was easier to reconstitute thr milk while the water temperature is around 30 degrees Celcius hence the limit at 30
 
 ## Hardware
 
